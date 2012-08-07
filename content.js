@@ -104,7 +104,6 @@ function enable_containers(config) {
 
 			$(container).data('meta', meta);
 		}
-
 		add_actions(container);
 	});
 

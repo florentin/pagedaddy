@@ -38,5 +38,17 @@ var CONFIGS = {
 				href:  '$(container).find("h3 a").attr("href")'
 			}
 		}
+	],
+	
+	"config.reddit.com": [
+		{
+			id: 'a',
+			container: '$("div.entry")',
+			identifier: '$(container).find("a:first")',
+			meta: {
+				title: '$(container).find("a").text()',
+				href:  '$(container).find("a").attr("href")'
+			}
+		}
 	]
 }
