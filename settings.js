@@ -43,7 +43,7 @@ var CONFIGS = {
 	"config.reddit.com": [
 		{
 			id: 'a',
-			container: '$("div.entry")',
+			container: '$("div.thing")',
 			identifier: '$(container).find("a:first")',
 			meta: {
 				title: '$(container).find("a").text()',
