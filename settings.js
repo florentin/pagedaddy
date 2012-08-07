@@ -4,9 +4,8 @@ var SETTINGS = {
 }
 
 var CONFIGS = {
-	"config.imobiliare.ro": [
-		{
-			id: 'a',
+	"config.imobiliare.ro": {
+		a: {
 			container: '$("div.oferta")',
 			identifier: '$(container).attr("id")',
 			meta: {
@@ -14,11 +13,10 @@ var CONFIGS = {
 				href: '$(container).find("a:eq(1)").attr("href")'
 			}
 		}
-	],
+	},
 
-	"config.anuntul.ro": [
-		{
-			id: 'a',
+	"config.anuntul.ro": {
+		a: {
 			container: '$("table#lista_anunturi tr")',
 			identifier: '$(container).find("a:first")',
 			meta: {
@@ -26,10 +24,10 @@ var CONFIGS = {
 				href:  '$(container).find("a:first").attr("href")'
 			}
 		}
-	],
+	},
 	
-	"config.google.com": [
-		{
+	"config.google.com": {
+		a: {
 			id: 'a',
 			container: '$("li.g")',
 			identifier: '$(container).find("div:first")',
@@ -38,11 +36,10 @@ var CONFIGS = {
 				href:  '$(container).find("h3 a").attr("href")'
 			}
 		}
-	],
+	},
 	
-	"config.reddit.com": [
-		{
-			id: 'a',
+	"config.reddit.com": {
+		a: {
 			container: '$("div.thing")',
 			identifier: '$(container).find("a:first")',
 			meta: {
@@ -50,5 +47,5 @@ var CONFIGS = {
 				href:  '$(container).find("a").attr("href")'
 			}
 		}
-	]
+	}
 }

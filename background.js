@@ -6,7 +6,6 @@ function getHost(url) {
 
 function checkForValidUrl(tabId, changeInfo, tab) {
 	var storage = chrome.storage.local;
-
 	var DOMAIN = String(getHost(tab.url).replace('www.', ''));
 	var CONFIG_KEY = 'config.'+DOMAIN;
 

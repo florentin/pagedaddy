@@ -1,6 +1,11 @@
 var storage = chrome.storage.local;
 //storage.clear();
 
+var DOMAIN = String(document.domain.replace('www.', ''));
+var COLLECTION_KEY = "collect."+DOMAIN;
+var CONFIG_KEY = 'config.'+DOMAIN;
+
+
 String.prototype.format = function() {
   var args = arguments;
   return this.replace(/{(\d+)}/g, function(match, number) { 
@@ -48,7 +53,6 @@ function collect_element(event) {
 		if (meta)
 			data["meta"] = meta()
 		
-		
 		config[COLLECTION_KEY][config_id][identity] = data;
 		
 		console.debug('collect', identity, flag)
@@ -59,7 +63,7 @@ function collect_element(event) {
 }
 
 function add_actions(container) {
-	var wrapper = $('<span style="width: 100%;"></span>');
+	var wrapper = $('<span style="width: 100%;"></span>').hide();
 	
 	$.each(SETTINGS.flags, function(i, flag) {
 		var button = $('<button type="button" class="css3button">{0}</button>'.format(flag) );
@@ -74,9 +78,19 @@ function add_actions(container) {
 	});
 
 	$(container).append(wrapper);
+
+	$(container).hover(
+		function() {
+			wrapper.show();
+		},
+		function() {
+			wrapper.hide();
+		}
+	);
+	//$(container).css('border', '1px solid yellow')
 }
 
-function enable_containers(config) {
+function enable_containers(id, config) {
 	var containers = eval(config.container);
 	
 	containers.each(function(i, container) {
@@ -86,7 +100,7 @@ function enable_containers(config) {
 			var identity = md5(JSON.stringify(get_attributes(identity)))
 		
 		$(container).data('identity',  identity);
-		$(container).data('config_id', String(config.id));
+		$(container).data('config_id', id);
 		
 		if (config.meta) {
 			// lazy evaluation of the meta values
@@ -124,9 +138,6 @@ function process_containers(containers, collection) {
 	})
 }
 
-var DOMAIN = String(document.domain.replace('www.', ''));
-var COLLECTION_KEY = "collect.{0}".format(DOMAIN);
-var CONFIG_KEY = 'config.{0}'.format(DOMAIN);
 
 storage.get(CONFIG_KEY, function(configs) {
 	// initiate the configuration for this domain
@@ -136,16 +147,15 @@ storage.get(CONFIG_KEY, function(configs) {
 	}
 	console.debug('configs', configs)
 	
-	$.each(configs[CONFIG_KEY], function(index, config) {
-		var containers = enable_containers(config);
-	
+	$.each(configs[CONFIG_KEY], function(id, config) {
+		var containers = enable_containers(id, config);
 		storage.get(COLLECTION_KEY, function(collection) {
 			if (!collection[COLLECTION_KEY]) {
 				collection[COLLECTION_KEY] = {};
 				storage.set(collection);
 			}
 			console.debug('collection', collection)
-			process_containers(containers, collection[COLLECTION_KEY][config.id]);
+			process_containers(containers, collection[COLLECTION_KEY][id]);
 		});
 	})
 });

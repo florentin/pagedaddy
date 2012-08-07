@@ -36,9 +36,10 @@ button.css3button {
 }
     
 .flag_grey {
-	background-color: grey !important;
+	background-color: #DEDEDE !important;
+	opacity:0.3;
 }
 
 .flag_yellow {
-	background-color: yellow !important;
+	background-color: #FAFFAF !important;
 }
