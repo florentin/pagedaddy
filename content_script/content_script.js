@@ -63,8 +63,7 @@ function collect_element(event) {
 }
 
 function add_actions(container) {
-	var wrapper = $('<span style="width: 100%;"></span>').hide();
-	
+	var wrapper = $('<span ></span>').hide();
 	$.each(SETTINGS.flags, function(i, flag) {
 		var button = $('<button type="button" class="css3button">{0}</button>'.format(flag) );
 		button.click(
@@ -76,18 +75,9 @@ function add_actions(container) {
 		)
 		wrapper.append(button);
 	});
+	$(container).after(wrapper);
+	$(container).tooltip({ position: "top center" });
 
-	$(container).append(wrapper);
-
-	$(container).hover(
-		function() {
-			wrapper.show();
-		},
-		function() {
-			wrapper.hide();
-		}
-	);
-	//$(container).css('border', '1px solid yellow')
 }
 
 function enable_containers(id, config) {

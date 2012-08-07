@@ -43,3 +43,12 @@ button.css3button {
 .flag_yellow {
 	background-color: #FAFFAF !important;
 }
+.tooltip {
+    display:none;
+    background:transparent url(/media/img/tooltip/black_arrow.png);
+    font-size:12px;
+    height:70px;
+    width:160px;
+    padding:25px;
+    color:#eee;
+}
