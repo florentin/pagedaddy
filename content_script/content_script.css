@@ -1,6 +1,6 @@
 button.css3button {
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 12px;
 	color: #333333;
 	padding: 0px;
 	background: -moz-linear-gradient(
@@ -36,19 +36,15 @@ button.css3button {
 }
     
 .flag_grey {
-	background-color: #DEDEDE !important;
-	opacity:0.3;
+	opacity: 0.2 !important;
+	text-decoration: line-through !important;
 }
 
 .flag_yellow {
 	background-color: #FAFFAF !important;
 }
-.tooltip {
-    display:none;
-    background:transparent url(/media/img/tooltip/black_arrow.png);
-    font-size:12px;
-    height:70px;
-    width:160px;
-    padding:25px;
-    color:#eee;
+
+.flag_red {
+	background-color: #FF8080 !important;
 }
+

@@ -76,8 +76,7 @@ function add_actions(container) {
 		wrapper.append(button);
 	});
 	$(container).after(wrapper);
-	$(container).tooltip({ position: "top center" });
-
+	$(container).tooltip({ position: "top center", relative: true });
 }
 
 function enable_containers(id, config) {
