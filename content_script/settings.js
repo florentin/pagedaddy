@@ -47,5 +47,50 @@ var CONFIGS = {
 				href:  '$(container).find("a").attr("href")'
 			}
 		}
+	},
+	
+	"config.magazinuldecase.ro": {
+		a: {
+			container: '$("div.imobil")',
+			identifier: '$(container).find("h2 a:first")',
+			meta: {
+				title: '$(container).find("h2 a:first").text()',
+				href:  '$(container).find("h2 a:first").attr("href")'
+			}
+		}
+	},
+	
+	"config.directproprietar.ro": {
+		a: {
+			container: '$("div.iep_offercontainer")',
+			identifier: '$(container).find("a:first")',
+			meta: {
+				title: '$(container).find("a:first").text()',
+				href:  '$(container).find("a:first").attr("href")'
+			}
+		}
+	},
+	
+	"config.ro-imobile.ro": {
+		a: {
+			container: '$("table[height=70]")',
+			identifier: '$(container).find("a:first")',
+			meta: {
+				title: '$(container).find("strong:first").text()',
+				href:  '$(container).find("a:first").attr("href")'
+			}
+		}
+	},
+	
+	"config.okazii.ro": {
+		a: {
+			container: '$("ul#OKAZII-Items li")',
+			identifier: '$(container).find("h2 a:first")',
+			meta: {
+				title: '$(container).find("h2 a:first").text()',
+				href:  '$(container).find("h2 a:first").attr("href")'
+			}
+		}
 	}
+
 }

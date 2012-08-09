@@ -83,6 +83,7 @@ function enable_containers(id, config) {
 	var containers = eval(config.container);
 	
 	containers.each(function(i, container) {
+		//console.debug("container found", container);
 		var identity = eval(config.identifier);
 		
 		if (identity instanceof jQuery)
