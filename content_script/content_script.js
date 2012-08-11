@@ -54,9 +54,9 @@ function collect_element(event) {
 			data["meta"] = meta()
 		
 		config[COLLECTION_KEY][config_id][identity] = data;
-		
-		console.debug('collect', identity, flag)
 		storage.set(config);
+		
+		console.debug('collected', container, identity, flag)
 		
 		mark_as_collected(container, flag);
 	});
@@ -79,19 +79,25 @@ function add_actions(container) {
 	$(container).tooltip({ position: "top center", relative: true });
 }
 
-function enable_containers(id, config) {
+function enable_containers(id, config, collection) {
 	var containers = eval(config.container);
-	
+
 	containers.each(function(i, container) {
-		//console.debug("container found", container);
+		if ($(container).data('enabled'))
+			return false
+			
 		var identity = eval(config.identifier);
+
+		//console.log('container enabled', container, identity)
 		
 		if (identity instanceof jQuery)
-			var identity = md5(JSON.stringify(get_attributes(identity)))
+			identity = get_attributes(identity)
+		
+		identity = md5(JSON.stringify(identity))
 		
 		$(container).data('identity',  identity);
 		$(container).data('config_id', id);
-		
+
 		if (config.meta) {
 			// lazy evaluation of the meta values
 			var meta = function () {
@@ -105,27 +111,23 @@ function enable_containers(id, config) {
 				})
 				return data;
 			}
-
+			
 			$(container).data('meta', meta);
 		}
 		add_actions(container);
+
+		if (collection) {
+			$.each(collection, function(identity, info) {
+				if ($(container).data('identity')==identity) {
+					mark_as_collected(container, info['flag']);
+				}
+			})
+		}
+
+		$(container).data('enabled', true)
 	});
 
 	return containers;
-}
-
-function process_containers(containers, collection) {
-	if (!collection) {
-		return false;
-	}
-
-	$(containers).each(function(index, container) {
-		$.each(collection, function(key, info) {
-			if ($(container).data('identity')==key) {
-				mark_as_collected(container, info['flag']);
-			}
-		})
-	})
 }
 
 
@@ -135,17 +137,24 @@ storage.get(CONFIG_KEY, function(configs) {
 		configs[CONFIG_KEY] = CONFIGS[CONFIG_KEY];
 		storage.set(configs);
 	}
-	console.debug('configs', configs)
-	
+
 	$.each(configs[CONFIG_KEY], function(id, config) {
-		var containers = enable_containers(id, config);
-		storage.get(COLLECTION_KEY, function(collection) {
-			if (!collection[COLLECTION_KEY]) {
-				collection[COLLECTION_KEY] = {};
-				storage.set(collection);
+		storage.get(COLLECTION_KEY, function(collections) {
+			if (!collections[COLLECTION_KEY]) {
+				collections[COLLECTION_KEY] = {};
+				storage.set(collections);
 			}
-			console.debug('collection', collection)
-			process_containers(containers, collection[COLLECTION_KEY][id]);
+
+			if (config.collections) {
+				var collection = {}
+				$.each(config.collections, function(i, collection_id) {
+					$.extend(collection, collections[COLLECTION_KEY][collection_id]);
+				})
+			} else
+				var collection = collections[COLLECTION_KEY][id]
+
+			console.debug('collection', id, config, collection)
+			enable_containers(id, config, collection);
 		});
 	})
 });
