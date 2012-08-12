@@ -1,4 +1,4 @@
-var storage = chrome.storage.local;
+var storage = chrome.storage.sync;
 //storage.clear();
 
 var DOMAIN = String(document.domain.replace('www.', ''));
@@ -153,7 +153,7 @@ storage.get(CONFIG_KEY, function(configs) {
 			} else
 				var collection = collections[COLLECTION_KEY][id]
 
-			console.debug('collection', id, config, collection)
+			console.debug('config', id, config, collection)
 			enable_containers(id, config, collection);
 		});
 	})

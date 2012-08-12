@@ -1,3 +1,5 @@
+var storage = chrome.storage.sync;
+
 function getHost(url) {
 	var a = document.createElement('a');
 	a.href = url;
@@ -5,7 +7,6 @@ function getHost(url) {
 }
 
 function checkForValidUrl(tabId, changeInfo, tab) {
-	var storage = chrome.storage.local;
 	var DOMAIN = String(getHost(tab.url).replace('www.', ''));
 	var CONFIG_KEY = 'config.'+DOMAIN;
 

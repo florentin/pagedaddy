@@ -18,29 +18,21 @@ var CONFIGS = {
 	"config.anuntul.ro": {
 		a: {
 			container: '$("table#lista_anunturi tr")',
-			identifier: '$("a:first", container)',
+			identifier: '$(container).find("td.text a").attr("href")',
 			meta: {
-				title: '$(container).find("a:first").text()',
-				href:  '$(container).find("a:first").attr("href")'
-			}
+				title: '$(container).find("td.text a").text()',
+				href:  '$(container).find("td.text a").attr("href")'
+			},
+			collections: ['a', 'b']
 		},
 		b: {
-			container: '$("table#lista_anunturi tr")',
-			identifier: '$("td.text a:first", container).attr("href")',
-			meta: {
-				title: '$("td.text a:first", container).text()',
-				href:  '$("td.texta:first", container).attr("href")'
-			},
-			collections: ['b', 'c']
-		},
-		c: {
 			container: '$("table#detalii_anunt")',
 			identifier: 'location.href',
 			meta: {
 				title: '$("title").text()',
 				href:  'location.href'
 			},
-			collections: ['b', 'c']
+			collections: ['a', 'b']
 		}
 	},
 	
@@ -107,6 +99,17 @@ var CONFIGS = {
 			meta: {
 				title: '$(container).find("h2 a:first").text()',
 				href:  '$(container).find("h2 a:first").attr("href")'
+			}
+		}
+	},
+	
+	"config.mercador.ro": {
+		a: {
+			container: '$("table#offers_table tr[id*=\'offer-\']")',
+			identifier: '$("h4 a", container).attr("href")',
+			meta: {
+				title: '$(container).find("h4 a").text()',
+				href:  '$(container).find("h4 a").attr("href")'
 			}
 		}
 	}
