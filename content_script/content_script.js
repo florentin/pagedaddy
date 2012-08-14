@@ -1,4 +1,4 @@
-var storage = chrome.storage.sync;
+var storage = chrome.storage.local;
 //storage.clear();
 
 var DOMAIN = String(document.domain.replace('www.', ''));

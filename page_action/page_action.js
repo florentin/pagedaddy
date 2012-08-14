@@ -1,4 +1,4 @@
-var storage = chrome.storage.sync;
+var storage = chrome.storage.local;
 
 function getHost(url) {
 	var a = document.createElement('a');
