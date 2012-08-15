@@ -45,6 +45,13 @@ button.css3button {
 }
 
 .flag_red {
-	background-color: #FF8080 !important;
+	background-color: #FF6770 !important;
 }
 
+.flag_green {
+	background-color: #1EF122 !important;
+}
+
+.flag_blue {
+	background-color: #78AFFF !important;
+}

@@ -1,5 +1,5 @@
 var SETTINGS = {
-	flags: ['grey', 'yellow', 'red'],
+	flags: ['grey', 'green', 'blue', 'red'],
 	action_position: ""
 }
 
