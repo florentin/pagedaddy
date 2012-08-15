@@ -134,6 +134,10 @@ function enable_containers(id, config, collection) {
 storage.get(CONFIG_KEY, function(configs) {
 	// initiate the configuration for this domain
 	if (!configs[CONFIG_KEY]) {
+		if (!CONFIGS[CONFIG_KEY]) {
+			return false;
+		}
+		
 		configs[CONFIG_KEY] = CONFIGS[CONFIG_KEY];
 		storage.set(configs);
 	}
