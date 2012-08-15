@@ -18,19 +18,21 @@ var CONFIGS = {
 	"config.anuntul.ro": {
 		a: {
 			container: '$("table#lista_anunturi tr")',
-			identifier: '$(container).find("td.text a").attr("href")',
+			identifier: '$(container).find("td.text a").attr("id")',
 			meta: {
 				title: '$(container).find("td.text a").text()',
-				href:  '$(container).find("td.text a").attr("href")'
+				href:  '$(container).find("td.text a").attr("href")',
+				id:  '$(container).find("td.text a").attr("id")'
 			},
 			collections: ['a', 'b']
 		},
 		b: {
 			container: '$("table#detalii_anunt")',
-			identifier: 'location.href',
+			identifier: '$(container).attr("anuntid")',
 			meta: {
 				title: '$("title").text()',
-				href:  'location.href'
+				href:  'location.href',
+				id:  '$(container).attr("anuntid")'
 			},
 			collections: ['a', 'b']
 		}
