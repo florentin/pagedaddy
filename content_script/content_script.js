@@ -56,7 +56,7 @@ function collect_element(event) {
 		config[COLLECTION_KEY][config_id][identity] = data;
 		storage.set(config);
 		
-		console.debug('collected', container, identity, flag)
+		//console.debug('collected', container, identity, flag)
 		
 		mark_as_collected(container, flag);
 	});
@@ -153,7 +153,7 @@ storage.get(CONFIG_KEY, function(configs) {
 			} else
 				var collection = collections[COLLECTION_KEY][id]
 
-			console.debug('config', id, config, collection)
+			//console.debug('config', id, config, collection)
 			enable_containers(id, config, collection);
 		});
 	})

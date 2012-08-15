@@ -42,7 +42,7 @@ var CONFIGS = {
 		a: {
 			id: 'a',
 			container: '$("li.g")',
-			identifier: '$("div:first", container)',
+			identifier: '$(container).find("div:first")',
 			meta: {
 				title: '$(container).find("h3 a").text()',
 				href:  '$(container).find("h3 a").attr("href")'
@@ -53,10 +53,10 @@ var CONFIGS = {
 	"config.reddit.com": {
 		a: {
 			container: '$("div.thing")',
-			identifier: '$("a:first", container)',
+			identifier: '$(container).find("a:first").attr("href")',
 			meta: {
-				title: '$(container).find("a").text()',
-				href:  '$(container).find("a").attr("href")'
+				title: '$(container).find("a:first").text()',
+				href:  '$(container).find("a:first").attr("href")'
 			}
 		}
 	},
@@ -75,7 +75,7 @@ var CONFIGS = {
 	"config.directproprietar.ro": {
 		a: {
 			container: '$("div.iep_offercontainer")',
-			identifier: '$("a:first", container)',
+			identifier: '$("a:first", container).attr("href")',
 			meta: {
 				title: '$(container).find("a:first").text()',
 				href:  '$(container).find("a:first").attr("href")'
@@ -86,7 +86,7 @@ var CONFIGS = {
 	"config.ro-imobile.ro": {
 		a: {
 			container: '$("table[height=70]")',
-			identifier: '$("a:first", container)',
+			identifier: '$(container).find("a:first").attr("href")',
 			meta: {
 				title: '$(container).find("strong:first").text()',
 				href:  '$(container).find("a:first").attr("href")'
@@ -97,7 +97,7 @@ var CONFIGS = {
 	"config.okazii.ro": {
 		a: {
 			container: '$("ul#OKAZII-Items li")',
-			identifier: '$("h2 a:first", container).attr("href")',
+			identifier: '$(container).find("h2 a:first").attr("href")',
 			meta: {
 				title: '$(container).find("h2 a:first").text()',
 				href:  '$(container).find("h2 a:first").attr("href")'
