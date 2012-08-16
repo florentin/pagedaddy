@@ -33,63 +33,91 @@ function get_attributes(data, kwargs) {
 	return all_attrs;
 }
 
-function mark_as_collected(jcontainer, flag) {
-	var old_flag = jcontainer.data('flag');
-	if (old_flag)
-		jcontainer.removeClass("flag_{0}".format(old_flag))
-	jcontainer.addClass("flag_{0}".format(flag));
-	jcontainer.data('flag', flag)
+function mark_as_collected(jcontainer, action_key) {
+	var action = SETTINGS.actions[action_key];
+	if (action.class) {
+		var action_class = jcontainer.data('action_class');
+		if (action_class)
+			jcontainer.removeClass(action_class)
+
+		jcontainer.addClass(action.class);
+		jcontainer.data('action_class', action.class)
+	} else {
+		console.log("'class' attribute is missing from the action config", jcontainer)
+	}
 }
 
 function collect_element(event) {
+	var jcontainer = event.data.jcontainer;
+	var action_key = event.data.action_key;
 	
-	var jcontainer = $(event.data.container);
-	var flag = event.data.flag;
-	
-	var config_id = jcontainer.data('config_id');
+	var config_key = jcontainer.data('config_key');
 	var identity_key = jcontainer.data('identity_key');
 	var meta = jcontainer.data('meta');	
 	
-	var data = {"flag": flag}
+	var data = {"action_key": action_key}
 	if (meta)
 		data["meta"] = meta();
 	
-	if (event.ctrlKey) {
-		//console.debug("collect element", jcontainer, config_id, identity_key, data)
-		//return true;
-	}
-	
 	storage.get(COLLECTION_KEY, function(config) {
-		if (!config[COLLECTION_KEY][config_id]) {
-			config[COLLECTION_KEY][config_id] = {}
+		if (!config[COLLECTION_KEY][config_key]) {
+			config[COLLECTION_KEY][config_key] = {}
 		}
 		
-		config[COLLECTION_KEY][config_id][identity_key] = data;
+		config[COLLECTION_KEY][config_key][identity_key] = data;
 		storage.set(config);
 		
-		//console.debug('collected', container, identity_key, flag)		
-		mark_as_collected(jcontainer, flag);
+		//console.debug('collected', container, identity_key, action_key)		
+		mark_as_collected(jcontainer, action_key);
 	});
 }
 
-function add_actions(container) {
+function add_actions(jcontainer) {
 	var wrapper = $('<span ></span>').hide();
-	$.each(SETTINGS.flags, function(i, flag) {
-		var button = $('<button type="button" class="css3button">{0}</button>'.format(flag) );
+	$.each(SETTINGS.actions, function(action_key, action) {
+		var button = $('<button type="button" class="css3button">{0}</button>'.format(action_key) );
 		button.click(
 			{
-				container: container,
-				flag: flag
+				jcontainer: jcontainer,
+				action_key: action_key
 			},
 			collect_element
 		);
 		wrapper.append(button);
 	});
-	$(container).after(wrapper);
-	$(container).tooltip({ position: "top center", relative: true });
+	jcontainer.after(wrapper);
+	jcontainer.tooltip({ position: "top center", relative: true });
+	
+	jcontainer.hover(
+		function(event) {
+			var that = $(this);
+			that.attr("tabindex", 0);
+			that.focus();
+			that.keydown(function(keyevent) {
+				console.log('cucu', $(this))
+				return true
+				var action_key = SETTINGS.keydowns[keyevent.which];
+				if (action_key) {
+					event.data = {
+						jcontainer: that, 
+						action_key: action_key
+					};
+					collect_element(event)
+				}
+			});
+		},
+		function(event) {
+			//$(document).unbind('keydown');
+			
+			var that = $(this);
+			that.removeAttr("tabindex");
+			that.blur();
+			that.unbind("keydown");
+		}
+	)	
 }
 
-function enable_containers(config_id, config, collection) {
+function enable_containers(config_key, config, collection) {
 	var containers = eval(config.container);
 
 	$.each(containers, function(i, container) {
@@ -113,7 +141,7 @@ function enable_containers(config_id, config, collection) {
 		
 		// Chrome storage will crash if the key is a INT like string, so we append a "#"		
 		jcontainer.data('identity_key',  "#"+identity_key);
-		jcontainer.data('config_id', config_id);
+		jcontainer.data('config_key', config_key);
 
 		if (config.meta) {
 			// lazy evaluation of the meta values
@@ -132,12 +160,12 @@ function enable_containers(config_id, config, collection) {
 			jcontainer.data('meta', meta);
 		}
 		
-		add_actions(container);
+		add_actions(jcontainer);
 
 		if (collection) {
 			$.each(collection, function(identity_key, info) {
 				if (jcontainer.data('identity_key')==identity_key) {
-					mark_as_collected(jcontainer, info['flag']);
+					mark_as_collected(jcontainer, info['action_key']);
 				}
 			})
 		}
@@ -145,7 +173,7 @@ function enable_containers(config_id, config, collection) {
 		jcontainer.data('enabled', true)
 		
 		if (SETTINGS.debug_containers && i < SETTINGS.debug_containers )
-			console.debug("container enabled", jcontainer, config_id, identity, identity_key, meta())
+			console.debug("container enabled", jcontainer, config_key, identity, identity_key, meta())
 	});
 
 	return containers;
@@ -183,8 +211,9 @@ storage.get(CONFIG_KEY, function(configs) {
 				})
 			} else
 				var collection = collections[COLLECTION_KEY][id]
-
-			//console.debug('config', id, config, collection)
+			
+			if (SETTINGS.debug_config)
+				console.debug('config', id, config, collection)
 			enable_containers(id, config, collection);
 		});
 	})

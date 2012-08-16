@@ -1,7 +1,19 @@
 var SETTINGS = {
-	flags: ['grey', 'green', 'blue', 'red'],
+	actions: {
+		grey: {class: "flag_grey"}, 
+		green:  {class: "flag_green"},
+		blue:  {class: "flag_blue"},
+		red: {class: "flag_red"}
+	},
+	keydowns: {
+		65: 'grey', 
+		83: 'green', 
+		68: 'blue', 
+		70: 'red'
+	},
 	action_position: "",
-	debug_containers: 0
+	debug_containers: 0,
+	debug_config: false,
 }
 
 var CONFIGS = {
@@ -20,7 +32,7 @@ var CONFIGS = {
 	"config.anuntul.ro": {
 		a: {
 			container: '$("table#lista_anunturi tr")',
-			identifier: 'emd5(JSON.stringify($(container).find("td.text a").attr("id")))',
+			identifier: '$(container).find("td.text a").attr("id")',
 			meta: {
 				title: '$(container).find("td.text a").text().trim()',
 				href:  '$(container).find("td.text a").attr("href")',
@@ -30,7 +42,7 @@ var CONFIGS = {
 		},
 		b: {
 			container: '$("table#detalii_anunt")',
-			identifier: 'emd5(JSON.stringify($(container).attr("anuntid")))',
+			identifier: '$(container).attr("anuntid")',
 			meta: {
 				title: '$("title").text().trim()',
 				href:  'location.href',
