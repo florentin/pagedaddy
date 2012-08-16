@@ -10,7 +10,13 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["jquery/jquery.js", "jquery/jquery.tools.min.js", "utils/md5.js", "content_script/settings.js", "content_script/content_script.js"],
+      "js": [
+				"jquery/jquery.js", 
+				"jquery/jquery.tools.min.js", 
+				"utils/md5.js", 
+			 	"content_script/defaults.js", 
+				"content_script/content_script.js"
+			],
       "css": ["content_script/content_script.css"]
     }
   ],
