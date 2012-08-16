@@ -5,17 +5,6 @@ var DOMAIN = String(document.domain.replace('www.', ''));
 var COLLECTION_KEY = "collect."+DOMAIN;
 var CONFIG_KEY = 'config.'+DOMAIN;
 
-
-String.prototype.format = function() {
-  var args = arguments;
-  return this.replace(/{(\d+)}/g, function(match, number) { 
-    return typeof args[number] != 'undefined'
-      ? args[number]
-      : match
-    ;
-  });
-};
-
 function debug() {
 	console.log('penis')
 	return true
@@ -75,7 +64,7 @@ function collect_element(event) {
 function add_actions(jcontainer) {
 	var wrapper = $('<span ></span>').hide();
 	$.each(SETTINGS.actions, function(action_key, action) {
-		var button = $('<button type="button" class="css3button">{0}</button>'.format(action_key) );
+		var button = $('<button type="button" class="css3button">'+(action.title || action_key)+'</button>' );
 		button.click(
 			{
 				jcontainer: jcontainer,
@@ -91,11 +80,7 @@ function add_actions(jcontainer) {
 	jcontainer.hover(
 		function(event) {
 			var that = $(this);
-			that.attr("tabindex", 0);
-			that.focus();
-			that.keydown(function(keyevent) {
-				console.log('cucu', $(this))
-				return true
+			$(document).keydown(function(keyevent) {
 				var action_key = SETTINGS.keydowns[keyevent.which];
 				if (action_key) {
 					event.data = {
@@ -107,12 +92,7 @@ function add_actions(jcontainer) {
 			});
 		},
 		function(event) {
-			//$(document).unbind('keydown');
-			
-			var that = $(this);
-			that.removeAttr("tabindex");
-			that.blur();
-			that.unbind("keydown");
+			$(document).unbind('keydown');
 		}
 	)	
 }
@@ -127,16 +107,16 @@ function enable_containers(config_key, config, collection) {
 			return false
 			
 		var identity = eval(config.identifier);
+			
+		if (!identity) {
+			console.log("cannot establish identity", jcontainer, identity)
+			return true
+		}
 		
 		if (identity instanceof jQuery) {
 			var identity_key = JSON.stringify(get_attributes(identity));
 		} else {
 			var identity_key = String(identity);
-		}
-					
-		if (!identity_key) {
-			console.log("cannot establish identity", jcontainer, identity)
-			return true
 		}
 		
 		// Chrome storage will crash if the key is a INT like string, so we append a "#"		

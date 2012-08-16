@@ -1,5 +1,5 @@
 {
-  "name": "Apply flags to the selected elements.",
+  "name": "Collect elements from any page.",
   "version": "1.0",
   "permissions": [
     "tabs",

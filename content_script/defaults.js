@@ -1,9 +1,9 @@
 var SETTINGS = {
 	actions: {
-		grey: {class: "flag_grey"}, 
-		green:  {class: "flag_green"},
-		blue:  {class: "flag_blue"},
-		red: {class: "flag_red"}
+		grey: {class: "flag_grey", title: "grey (a)"}, 
+		green:  {class: "flag_green", title: "green (s)"},
+		blue:  {class: "flag_blue", title: "blue (d)"},
+		red: {class: "flag_red", title: "red (f)"}
 	},
 	keydowns: {
 		65: 'grey', 
@@ -12,8 +12,8 @@ var SETTINGS = {
 		70: 'red'
 	},
 	action_position: "",
-	debug_containers: 0,
-	debug_config: false,
+	debug_containers: 10,
+	debug_config: true,
 }
 
 var CONFIGS = {
