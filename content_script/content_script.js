@@ -24,15 +24,20 @@ function get_attributes(data, kwargs) {
 
 function mark_as_collected(jcontainer, action_key) {
 	var action = SETTINGS.actions[action_key];
-	if (action.class) {
-		var action_class = jcontainer.data('action_class');
-		if (action_class)
-			jcontainer.removeClass(action_class)
-
-		jcontainer.addClass(action.class);
-		jcontainer.data('action_class', action.class)
-	} else {
-		console.log("'class' attribute is missing from the action config", jcontainer)
+	if (action.css) {
+		
+		var original_css = jcontainer.data('original_css') || {}
+		if (original_css) { // reset css
+			$.each(original_css, function(key, css) {
+				jcontainer.css(key, css);
+			});
+		} else { // backup css
+			$.each(action.css, function(key, css) {
+				original_css[key] = css;
+			});
+			jcontainer.data('original_css', original_css)
+		}
+		jcontainer.css(action.css);
 	}
 }
 
@@ -152,7 +157,7 @@ function enable_containers(config_key, config, collection) {
 
 		jcontainer.data('enabled', true)
 		
-		if (SETTINGS.debug_containers && i < SETTINGS.debug_containers )
+		if (SETTINGS.log_containers && i < SETTINGS.log_containers )
 			console.debug("container enabled", jcontainer, config_key, identity, identity_key, meta())
 	});
 
@@ -192,7 +197,7 @@ storage.get(CONFIG_KEY, function(configs) {
 			} else
 				var collection = collections[COLLECTION_KEY][id]
 			
-			if (SETTINGS.debug_config)
+			if (SETTINGS.log_config)
 				console.debug('config', id, config, collection)
 			enable_containers(id, config, collection);
 		});

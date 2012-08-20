@@ -1,9 +1,21 @@
 var SETTINGS = {
 	actions: {
-		grey: {class: "flag_grey", title: "grey (a)"}, 
-		green:  {class: "flag_green", title: "green (s)"},
-		blue:  {class: "flag_blue", title: "blue (d)"},
-		red: {class: "flag_red", title: "red (f)"}
+		grey: {
+			css: {"opacity": "0.4", "text-decoration": "line-through"}, 
+			title: "grey (a)"
+		}, 
+		green:  {
+			css: {"background-color": "#1EF122", "border": "1px solid #1EF122"}, 
+			title: "green (s)"
+		},
+		blue:  {
+			css: {"background-color": "#78AFFF", "border": "1px solid #78AFFF"}, 
+			title: "blue (d)"
+		},
+		red: {
+			css: {"background-color": "#FF6770", "border": "1px solid #FF6770"}, 
+			title: "red (f)"
+		}
 	},
 	keydowns: {
 		65: 'grey', 
@@ -11,9 +23,8 @@ var SETTINGS = {
 		68: 'blue', 
 		70: 'red'
 	},
-	action_position: "",
-	debug_containers: 10,
-	debug_config: true,
+	log_containers: 0,
+	log_config: false,
 }
 
 var CONFIGS = {
