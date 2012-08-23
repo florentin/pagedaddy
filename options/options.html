@@ -1,35 +1,13 @@
 <html>
-<head><title>My Test Extension Options</title></head>
-<script type="text/javascript">
-// Saves options to localStorage.
-function save_options() {
-  var select = document.getElementById("color");
-  var color = select.children[select.selectedIndex].value;
-  localStorage["favorite_color"] = color;
-  // Update status to let user know options were saved.
-  var status = document.getElementById("status");
-  status.innerHTML = "Options Saved.";
-  setTimeout(function() {
-    status.innerHTML = "";
-  }, 750);
-}
-// Restores select box state to saved value from localStorage.
-function restore_options() {
-  var favorite = localStorage["favorite_color"];
-  if (!favorite) {
-    return;
-  }
-  var select = document.getElementById("color");
-  for (var i = 0; i < select.children.length; i++) {
-    var child = select.children[i];
-    if (child.value == favorite) {
-      child.selected = "true";
-      break;
-    }
-  }
-}
-</script>
+<head><title>Pagedaddy Options</title></head>
 <body onload="restore_options()">
+
+<div style="border: 1px solid green">
+<label name="name">Name</label><input type="text" name="key" value="" /><br />
+<label name="css">Css</label><input type="text" name="css" value="" /><br />
+<label name="title">Title</label><input type="text" name="title" value="" /><br />
+</div>
+
 Favorite Color:
 <select id="color">
  <option value="red">red</option>
@@ -38,6 +16,9 @@ Favorite Color:
  <option value="yellow">yellow</option>
 </select>
 <br>
+
 <button onclick="save_options()">Save</button>
+
+<script src="options.js"></script>
 </body>
 </html>

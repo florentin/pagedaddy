@@ -1,26 +1,26 @@
 var SETTINGS = {
 	actions: {
 		grey: {
-			css: {"opacity": "0.4", "text-decoration": "line-through"}, 
+			css: {"opacity": "0.4", "text-decoration": "line-through", "background-color": "transparent", "border": "none"}, 
 			title: "grey (a)"
 		}, 
-		green:  {
-			css: {"background-color": "#1EF122", "border": "1px solid #1EF122"}, 
-			title: "green (s)"
-		},
 		blue:  {
-			css: {"background-color": "#78AFFF", "border": "1px solid #78AFFF"}, 
-			title: "blue (d)"
+			css: {"opacity": "1", "text-decoration": "none", "background-color": "#B6E1F2", "border": "1px solid #B6E1F2"}, 
+			title: "blue (s)"
+		},
+		green:  {
+			css: {"opacity": "1", "text-decoration": "none", "background-color": "#B9F73E", "border": "1px solid #B9F73E"}, 
+			title: "green (d)"
 		},
 		red: {
-			css: {"background-color": "#FF6770", "border": "1px solid #FF6770"}, 
+			css: {"opacity": "1", "text-decoration": "none", "background-color": "#FF6770", "border": "1px solid #FF6770"}, 
 			title: "red (f)"
 		}
 	},
 	keydowns: {
 		65: 'grey', 
-		83: 'green', 
-		68: 'blue', 
+		83: 'blue',
+		68: 'green',
 		70: 'red'
 	},
 	log_containers: 0,
