@@ -1,33 +1,33 @@
-var SETTINGS = {
+var DEFAULT_SETTINGS = {
 	actions: {
 		grey: {
 			css: {"opacity": "0.4", "text-decoration": "line-through", "background-color": "transparent", "border": "none"}, 
-			title: "grey (a)"
+			title: "grey (q)"
 		}, 
 		blue:  {
 			css: {"opacity": "1", "text-decoration": "none", "background-color": "#B6E1F2", "border": "1px solid #B6E1F2"}, 
-			title: "blue (s)"
+			title: "blue (w)"
 		},
 		green:  {
 			css: {"opacity": "1", "text-decoration": "none", "background-color": "#B9F73E", "border": "1px solid #B9F73E"}, 
-			title: "green (d)"
+			title: "green (e)"
 		},
 		red: {
 			css: {"opacity": "1", "text-decoration": "none", "background-color": "#FF6770", "border": "1px solid #FF6770"}, 
-			title: "red (f)"
+			title: "red (r)"
 		}
 	},
 	keydowns: {
-		65: 'grey', 
-		83: 'blue',
-		68: 'green',
-		70: 'red'
+		81: 'grey', 
+		87: 'blue',
+		69: 'green',
+		82: 'red'
 	},
 	log_containers: 0,
-	log_config: false,
+	log_config: 0,
 }
 
-var CONFIGS = {
+var DEFAULT_CONFIGS = {
 	"config.imobiliare.ro": {
 		a: {
 			container: '$("div.oferta")',
@@ -48,8 +48,7 @@ var CONFIGS = {
 				title: '$(container).find("td.text a").text().trim()',
 				href:  '$(container).find("td.text a").attr("href")',
 				id:  '$(container).find("td.text a").attr("id")'
-			},
-			collections: ['a', 'b']
+			}
 		},
 		b: {
 			container: '$("table#detalii_anunt")',
@@ -59,7 +58,7 @@ var CONFIGS = {
 				href:  'location.href',
 				id:  '$(container).attr("anuntid")'
 			},
-			collections: ['a', 'b']
+			collection_key: 'a'
 		}
 	},
 	
@@ -162,6 +161,58 @@ var CONFIGS = {
 				href:  '$(container).find("div.colorat").attr("onclick").match(/\'([^\']*)\'$/i)[1]',
 				id: 	'identity'
 			}
+		}
+	},
+	
+	"config.ejobs.ro": {
+		a: {
+			container: '$("tr.companie")',
+			identifier: '$(container).find("a:first").attr("name").replace("job_", "")',
+			meta: {
+				title: '$(container).find("a[onmouseover]").text().trim()',
+				href: '$(container).find("a[onmouseover]").attr("href")',
+				id: 'identity'
+			}
+		}
+	},
+	
+	"config.hipo.ro": {
+		a: {
+			container: '$("table.recordTable:last tr")',
+			identifier: 'emd5($(container).find("a:first").attr("href"))',
+			meta: {
+				title: '$(container).find("a:first").text().trim()',
+				href: '$(container).find("a:first").attr("href")'
+			}
+		}
+	},
+	
+	"config.myjob.ro": {
+		a: {
+			container: '$("tr.topjob")',
+			identifier: '$(container).attr("id").replace("ljrow_", "")',
+			meta: {
+				title: '$(container).find("a:first").text().trim()',
+				href: '$(container).find("a:first").attr("href")'
+			}
+		}
+	},
+	
+	"config.imobiliare.net": {
+		a: {
+			container: '$("div.anunt")',
+			identifier: '$(container).find("a.sel").attr("id").replace("ad", "")',
+			meta: {
+				href: '$(container).find("a.micut:last").attr("href")'
+			}
+		},
+		b: {
+			container: '$("div.post")',
+			identifier: '$(container).find("span[id]").attr("id").replace("ad", "")',
+			meta: {
+				href: 'location.href'
+			},
+			collection_key: 'a'
 		}
 	}
 

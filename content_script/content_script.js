@@ -5,11 +5,6 @@ var DOMAIN = String(document.domain.replace('www.', ''));
 var COLLECTION_KEY = "collect."+DOMAIN;
 var CONFIG_KEY = 'config.'+DOMAIN;
 
-function debug() {
-	console.log('penis')
-	return true
-}
-
 function get_attributes(data, kwargs) {
 	var all_attrs = []
 	data.each(function(index, elem) {
@@ -23,7 +18,7 @@ function get_attributes(data, kwargs) {
 }
 
 function mark_as_collected(jcontainer, action_key) {
-	var action = SETTINGS.actions[action_key];
+	var action = DEFAULT_SETTINGS.actions[action_key];
 	if (action.css) {
 		
 		var original_css = jcontainer.data('original_css') || {}
@@ -45,30 +40,25 @@ function collect_element(event) {
 	var jcontainer = event.data.jcontainer;
 	var action_key = event.data.action_key;
 	
-	var config_key = jcontainer.data('config_key');
-	var identity_key = jcontainer.data('identity_key');
+	var collection_key = jcontainer.data('collection_key');
+	var identity = jcontainer.data('identity');
 	var meta = jcontainer.data('meta');	
 	
 	var data = {"action_key": action_key}
 	if (meta)
 		data["meta"] = meta();
 	
-	storage.get(COLLECTION_KEY, function(config) {
-		if (!config[COLLECTION_KEY][config_key]) {
-			config[COLLECTION_KEY][config_key] = {}
-		}
-		
-		config[COLLECTION_KEY][config_key][identity_key] = data;
-		storage.set(config);
-		
-		//console.debug('collected', container, identity_key, action_key)		
+	storage.get(COLLECTION_KEY, function(collection) {
+		collection[COLLECTION_KEY][collection_key][identity] = data;
+		storage.set(collection);
+
 		mark_as_collected(jcontainer, action_key);
 	});
 }
 
 function add_actions(jcontainer) {
 	var wrapper = $('<span ></span>').hide();
-	$.each(SETTINGS.actions, function(action_key, action) {
+	$.each(DEFAULT_SETTINGS.actions, function(action_key, action) {
 		var button = $('<button type="button" class="css3button">'+(action.title || action_key)+'</button>' );
 		button.click(
 			{
@@ -86,7 +76,7 @@ function add_actions(jcontainer) {
 		function(event) {
 			var that = $(this);
 			$(document).keydown(function(keyevent) {
-				var action_key = SETTINGS.keydowns[keyevent.which];
+				var action_key = DEFAULT_SETTINGS.keydowns[keyevent.which];
 				if (action_key) {
 					event.data = {
 						jcontainer: that, 
@@ -102,7 +92,7 @@ function add_actions(jcontainer) {
 	)	
 }
 
-function enable_containers(config_key, config, collection) {
+function enable_containers(config, collection) {
 	var containers = eval(config.container);
 
 	$.each(containers, function(i, container) {
@@ -110,23 +100,23 @@ function enable_containers(config_key, config, collection) {
 		
 		if (jcontainer.data('enabled'))
 			return false
-			
-		var identity = eval(config.identifier);
-			
-		if (!identity) {
-			console.log("cannot establish identity", jcontainer, identity)
-			return true
+
+		// determine the identity of the container
+		var identity_obj = eval(config.identifier);
+		if (!identity_obj) {
+			console.log("cannot establish identity", jcontainer, identity_obj);
+			return true;
 		}
-		
-		if (identity instanceof jQuery) {
-			var identity_key = JSON.stringify(get_attributes(identity));
+		if (identity_obj instanceof jQuery) {
+			var identity = JSON.stringify(get_attributes(identity_obj));
 		} else {
-			var identity_key = String(identity);
+			var identity = String(identity_obj);
 		}
+		identity = "#"+identity
 		
-		// Chrome storage will crash if the key is a INT like string, so we append a "#"		
-		jcontainer.data('identity_key',  "#"+identity_key);
-		jcontainer.data('config_key', config_key);
+		// Chrome storage will crash if the key is a INT like string, so we append a "#"
+		jcontainer.data('identity',  identity);
+		jcontainer.data('collection_key', config.collection_key);
 
 		if (config.meta) {
 			// lazy evaluation of the meta values
@@ -148,17 +138,19 @@ function enable_containers(config_key, config, collection) {
 		add_actions(jcontainer);
 
 		if (collection) {
-			$.each(collection, function(identity_key, info) {
-				if (jcontainer.data('identity_key')==identity_key) {
-					mark_as_collected(jcontainer, info['action_key']);
+			//console.log('collection', collection);
+			$.each(collection, function(collection_key, collected) {
+				if (jcontainer.data('identity')==collection_key) {
+					console.log('marking', jcontainer, collected)
+					mark_as_collected(jcontainer, collected['action_key']);
 				}
 			})
 		}
 
 		jcontainer.data('enabled', true)
 		
-		if (SETTINGS.log_containers && i < SETTINGS.log_containers )
-			console.debug("container enabled", jcontainer, config_key, identity, identity_key, meta())
+		if (DEFAULT_SETTINGS.log_containers && i < DEFAULT_SETTINGS.log_containers )
+			console.debug("container enabled", jcontainer, config, identity_obj, identity, meta())
 	});
 
 	return containers;
@@ -171,35 +163,45 @@ function emd5(string, key, raw) {
 		return md5(string, key, raw);
 }
 
-storage.get(CONFIG_KEY, function(configs) {
-	// initiate the configuration for this domain
-	if (!configs[CONFIG_KEY]) {
-		if (!CONFIGS[CONFIG_KEY]) {
+storage.get(CONFIG_KEY, function(stored_configs) {
+	if (!stored_configs[CONFIG_KEY]) {
+		// initiate the configuration for this domain configs
+		if (!DEFAULT_CONFIGS[CONFIG_KEY]) {
+			// there are no defaults
 			return false;
+		} else {
+			// we have a default config, let's store them
+			stored_configs[CONFIG_KEY] = DEFAULT_CONFIGS[CONFIG_KEY];
+			storage.set(stored_configs);
 		}
-		
-		configs[CONFIG_KEY] = CONFIGS[CONFIG_KEY];
-		storage.set(configs);
 	}
 
-	$.each(configs[CONFIG_KEY], function(id, config) {
+	$.each(stored_configs[CONFIG_KEY], function(config_id, config) {
+		config.id = config_id;
+		
 		storage.get(COLLECTION_KEY, function(collections) {
-			if (!collections[COLLECTION_KEY]) {
+			// this config might use another config's collection
+			// typeof something === "undefined"
+			if (!config.hasOwnProperty('collection_key')) {
+				config.collection_key = config.id;
+			}
+			
+			// initialize the collection for the COLLECTION_KEY and the collection_key
+			if (!collections.hasOwnProperty(COLLECTION_KEY)) {
+				
 				collections[COLLECTION_KEY] = {};
 				storage.set(collections);
+			} else if (!collections[COLLECTION_KEY][config.collection_key]) {
+				collections[COLLECTION_KEY][config.collection_key] = {};
+				storage.set(collections);
 			}
-
-			if (config.collections) {
-				var collection = {}
-				$.each(config.collections, function(i, collection_id) {
-					$.extend(collection, collections[COLLECTION_KEY][collection_id]);
-				})
-			} else
-				var collection = collections[COLLECTION_KEY][id]
 			
-			if (SETTINGS.log_config)
-				console.debug('config', id, config, collection)
-			enable_containers(id, config, collection);
+			var collection = collections[COLLECTION_KEY][config.collection_key];
+
+			if (DEFAULT_SETTINGS.log_config)
+				console.debug('config', config, 'collection', collection);
+
+			enable_containers(config, collection);
 		});
 	})
 });
