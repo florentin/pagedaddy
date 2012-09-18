@@ -24,7 +24,7 @@ var DEFAULT_SETTINGS = {
 		82: 'red'
 	},
 	log_containers: 0,
-	log_config: 0,
+	log_config: 1,
 }
 
 var DEFAULT_CONFIGS = {
@@ -214,6 +214,18 @@ var DEFAULT_CONFIGS = {
 			},
 			collection_key: 'a'
 		}
+	},
+	
+	"config.bestjobs.ro": {
+		a: {
+			container: '$("div.one-job")',
+			identifier: '$(container).attr("id").replace("jobDiv_", "")',
+			meta: {
+				title: '$(container).find("div.one-job-title a").text().trim()',
+				href: '$(container).find("div.one-job-title a").attr("href")'
+			}
+		}
 	}
+	
 
 }

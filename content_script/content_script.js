@@ -180,6 +180,7 @@ storage.get(CONFIG_KEY, function(stored_configs) {
 		config.id = config_id;
 		
 		storage.get(COLLECTION_KEY, function(collections) {
+			
 			// this config might use another config's collection
 			// typeof something === "undefined"
 			if (!config.hasOwnProperty('collection_key')) {
@@ -188,14 +189,15 @@ storage.get(CONFIG_KEY, function(stored_configs) {
 			
 			// initialize the collection for the COLLECTION_KEY and the collection_key
 			if (!collections.hasOwnProperty(COLLECTION_KEY)) {
-				
 				collections[COLLECTION_KEY] = {};
-				storage.set(collections);
-			} else if (!collections[COLLECTION_KEY][config.collection_key]) {
-				collections[COLLECTION_KEY][config.collection_key] = {};
 				storage.set(collections);
 			}
 			
+			if (!collections[COLLECTION_KEY].hasOwnProperty(config.collection_key)) {
+				collections[COLLECTION_KEY][config.collection_key] = {};
+				storage.set(collections);
+			}
+
 			var collection = collections[COLLECTION_KEY][config.collection_key];
 
 			if (DEFAULT_SETTINGS.log_config)
