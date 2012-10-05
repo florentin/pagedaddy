@@ -13,8 +13,8 @@ var DEFAULT_SETTINGS = {
 			title: "green (e)"
 		},
 		red: {
-			css: {"opacity": "1", "text-decoration": "none", "background-color": "#FF6770", "border": "1px solid #FF6770"}, 
-			title: "red (r)"
+			css: {"opacity": "1", "text-decoration": "none", "background-color": "#FFD83C", "border": "1px solid #FFD83C"}, 
+			title: "yellow (r)"
 		}
 	},
 	keydowns: {
@@ -200,8 +200,8 @@ var DEFAULT_CONFIGS = {
 	
 	"config.imobiliare.net": {
 		a: {
-			container: '$("div.anunt")',
-			identifier: '$(container).find("a.sel").attr("id").replace("ad", "")',
+			container: '$("div[class^=\'anunt\']")',
+			identifier: '$(container).find("a[id]").attr("id").replace("ad", "")',
 			meta: {
 				href: '$(container).find("a.micut:last").attr("href")'
 			}
@@ -225,7 +225,15 @@ var DEFAULT_CONFIGS = {
 				href: '$(container).find("div.one-job-title a").attr("href")'
 			}
 		}
-	}
+	},
 	
+	"config.anunturiparticulari.ro": {
+		a: {
+			container: '$("div.anunt")',
+			identifier: 'emd5($(container).find("div.colorat").text().trim())',
+			meta: {
+			}
+		}
+	}
 
 }
