@@ -1,19 +1,19 @@
 var DEFAULT_SETTINGS = {
 	actions: {
 		grey: {
-			css: {"opacity": "0.4", "text-decoration": "line-through", "background-color": "transparent", "border": "none"}, 
+			css: {"opacity": "0.5", "text-decoration": "line-through", "background-color": "#E0E4CC", "border": "none"}, 
 			title: "grey (q)"
 		}, 
 		blue:  {
-			css: {"opacity": "1", "text-decoration": "none", "background-color": "#B6E1F2", "border": "1px solid #B6E1F2"}, 
+			css: {"opacity": "1", "text-decoration": "none", "background-color": "#69D2E7", "border": "1px solid #69D2E7"}, 
 			title: "blue (w)"
 		},
 		green:  {
-			css: {"opacity": "1", "text-decoration": "none", "background-color": "#B9F73E", "border": "1px solid #B9F73E"}, 
+			css: {"opacity": "1", "text-decoration": "none", "background-color": "#D1E751", "border": "1px solid #D1E751"}, 
 			title: "green (e)"
 		},
 		red: {
-			css: {"opacity": "1", "text-decoration": "none", "background-color": "#FFD83C", "border": "1px solid #FFD83C"}, 
+			css: {"opacity": "1", "text-decoration": "none", "background-color": "#FC9D9A", "border": "1px solid #FC9D9A"}, 
 			title: "yellow (r)"
 		}
 	},
@@ -23,8 +23,10 @@ var DEFAULT_SETTINGS = {
 		69: 'green',
 		82: 'red'
 	},
+	update_key: 220,
+	//update_key: 85,
 	log_containers: 0,
-	log_config: 1,
+	log_config: 0,
 }
 
 var DEFAULT_CONFIGS = {
@@ -231,6 +233,16 @@ var DEFAULT_CONFIGS = {
 		a: {
 			container: '$("div.anunt")',
 			identifier: 'emd5($(container).find("div.colorat").text().trim())',
+			meta: {
+			}
+		}
+	},
+	
+	"config.imoalert.ro": {
+		a: {
+			container: '$("tr[id^=\'yui-rec\']")',
+			identifier: 'emd5($(container).text().trim())',
+			modify: '$(container).attr("class", "yui-dt-even")',
 			meta: {
 			}
 		}

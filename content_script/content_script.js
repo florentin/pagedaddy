@@ -75,19 +75,17 @@ function add_actions(jcontainer) {
 	jcontainer.hover(
 		function(event) {
 			var that = $(this);
-			$(document).keydown(function(keyevent) {
-				var action_key = DEFAULT_SETTINGS.keydowns[keyevent.which];
-				if (action_key) {
-					event.data = {
-						jcontainer: that, 
-						action_key: action_key
-					};
-					collect_element(event)
-				}
+			$(document).on('mykeydown', function(keyevent, action_key) {
+				event.data = {
+					jcontainer: that, 
+					action_key: action_key
+				};
+				collect_element(event);
+				return true;
 			});
 		},
 		function(event) {
-			$(document).unbind('keydown');
+			$(document).unbind('mykeydown');
 		}
 	)	
 }
@@ -118,7 +116,7 @@ function enable_containers(config, collection) {
 		jcontainer.data('identity',  identity);
 		jcontainer.data('collection_key', config.collection_key);
 
-		if (config.meta) {
+		if (config.hasOwnProperty('meta')) {
 			// lazy evaluation of the meta values
 			var meta = function () {
 				var data = {}
@@ -137,17 +135,22 @@ function enable_containers(config, collection) {
 		
 		add_actions(jcontainer);
 
+		if (config.hasOwnProperty('modify')) {
+			eval(config.modify)
+		}
+
 		if (collection) {
 			//console.log('collection', collection);
 			$.each(collection, function(collection_key, collected) {
 				if (jcontainer.data('identity')==collection_key) {
-					console.log('marking', jcontainer, collected)
+					//console.log('marking', jcontainer, collected)
 					mark_as_collected(jcontainer, collected['action_key']);
 				}
 			})
 		}
 
 		jcontainer.data('enabled', true)
+		
 		
 		if (DEFAULT_SETTINGS.log_containers && i < DEFAULT_SETTINGS.log_containers )
 			console.debug("container enabled", jcontainer, config, identity_obj, identity, meta())
@@ -163,47 +166,53 @@ function emd5(string, key, raw) {
 		return md5(string, key, raw);
 }
 
-storage.get(CONFIG_KEY, function(stored_configs) {
-	if (!stored_configs[CONFIG_KEY]) {
-		// initiate the configuration for this domain configs
-		if (!DEFAULT_CONFIGS[CONFIG_KEY]) {
-			// there are no defaults
-			return false;
-		} else {
-			// we have a default config, let's store them
-			stored_configs[CONFIG_KEY] = DEFAULT_CONFIGS[CONFIG_KEY];
-			storage.set(stored_configs);
+function main() {
+	storage.get(CONFIG_KEY, function(stored_configs) {
+		$.each(stored_configs[CONFIG_KEY], function(config_id, config) {
+			config.id = config_id;
+			
+			storage.get(COLLECTION_KEY, function(collections) {
+				// this config might use another config's collection
+				// typeof something === "undefined"
+				if (!config.hasOwnProperty('collection_key')) {
+					config.collection_key = config.id;
+				}
+				
+				// initialize the key (i.e. "a") inside this domain's collection
+				if (!collections[COLLECTION_KEY].hasOwnProperty(config.collection_key)) {
+					collections[COLLECTION_KEY][config.collection_key] = {};
+					storage.set(collections);
+				}
+
+				var collection = collections[COLLECTION_KEY][config.collection_key];
+
+				if (DEFAULT_SETTINGS.log_config)
+					console.debug('config', config, 'collection', collection);
+
+				enable_containers(config, collection);
+			});
+		})
+	});
+}
+
+main();
+
+$(document).on('keydown', function(keyevent) {
+	//if (keyevent.which==DEFAULT_SETTINGS.update_key && keyevent.ctrlKey) {
+	if (keyevent.which==DEFAULT_SETTINGS.update_key) {
+		main();
+	} else {
+		var action_key = DEFAULT_SETTINGS.keydowns[keyevent.which];
+		if (action_key) {
+			$(document).trigger('mykeydown', action_key);
 		}
-	}
-
-	$.each(stored_configs[CONFIG_KEY], function(config_id, config) {
-		config.id = config_id;
-		
-		storage.get(COLLECTION_KEY, function(collections) {
-			
-			// this config might use another config's collection
-			// typeof something === "undefined"
-			if (!config.hasOwnProperty('collection_key')) {
-				config.collection_key = config.id;
-			}
-			
-			// initialize the collection for the COLLECTION_KEY and the collection_key
-			if (!collections.hasOwnProperty(COLLECTION_KEY)) {
-				collections[COLLECTION_KEY] = {};
-				storage.set(collections);
-			}
-			
-			if (!collections[COLLECTION_KEY].hasOwnProperty(config.collection_key)) {
-				collections[COLLECTION_KEY][config.collection_key] = {};
-				storage.set(collections);
-			}
-
-			var collection = collections[COLLECTION_KEY][config.collection_key];
-
-			if (DEFAULT_SETTINGS.log_config)
-				console.debug('config', config, 'collection', collection);
-
-			enable_containers(config, collection);
-		});
-	})
+	}	
+	return true;
 });
+
+/*
+$("div#demo").bind("DOMSubtreeModified",function(){
+  console.log('modified')
+})
+*/
+

@@ -21,7 +21,10 @@
     }
   ],
   "background": {
-  	"scripts": ["background/background.js"]
+  	"scripts": [
+  				"content_script/defaults.js", 
+  				"background/background.js"
+  			   ]
   },
   "page_action" : {
     "default_title" : "PageDaddy",
